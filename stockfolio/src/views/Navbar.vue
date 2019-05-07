@@ -95,6 +95,7 @@
 		            $('.sidenav').sidenav('close');
 		        });
 		    });
+				M.AutoInit();
 		}
 	}
 </script>

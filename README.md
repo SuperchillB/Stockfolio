@@ -5,6 +5,8 @@ A small yet complete Vue.js/Firebase app I created when I first learned Vue.js. 
 - Client: Vue.js, MaterializeCSS, Axios
 - Server: Firebase DB
 - Tools: Vue CLI 3
+- Store: Vuex
+- Router: Vue Router
 
 ## To do:
 - Replace Materialize CSS with Vuetify

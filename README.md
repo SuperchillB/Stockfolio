@@ -9,6 +9,7 @@ A small yet complete Vue.js/Firebase app I created when I first learned Vue.js a
 - Router: Vue Router
 
 ## To do:
+- Clean code
 - Fix loader
 - Add authentication
 - Improve back-end middleware

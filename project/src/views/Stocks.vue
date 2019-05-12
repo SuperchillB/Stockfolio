@@ -18,11 +18,11 @@
 			</transition>
 		</v-layout>
 		<v-layout class="stocks__main" row wrap>
-			<!-- <v-flex xs12 sm6 md4 lg3> -->
+			<v-flex xs12>
 				<transition-group name="bounce" tag="div" class="stock__main__wrapper">
 					<stock-item class="item" v-for="stock in filteredStocks" :stock="stock" :key="stock.id"></stock-item>
 				</transition-group>
-			<!-- </v-flex> -->
+			</v-flex>
 		</v-layout>
 	</v-container>
 

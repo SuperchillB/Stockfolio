@@ -1,6 +1,16 @@
 <template>
-	<v-container grid-list-xl class="stocks mt-4">
-		<v-layout class="stocks__main" column wrap>
+	<v-container d-flex align-center fill-height v-if="showLoader">
+		<div class="text-xs-center">
+			<v-progress-circular
+				:size="70"
+	      :width="7"
+	      color="teal lighten-2"
+	      indeterminate
+	    ></v-progress-circular>
+		</div>
+	</v-container>
+	<v-container v-else grid-list-xl class="stocks mt-4">
+		<v-layout column wrap>
 			<h1 class="font-weight-light teal--text accent-4" :class="`display-${getDisplay}`">Stock Market</h1>
 			<v-divider class="my-3"></v-divider>
 			<p class="teal--text lighten-1">
@@ -17,40 +27,14 @@
 					v-model.lowercase="searchValue"></stock-filter>
 			</transition>
 		</v-layout>
-		<v-layout class="stocks__main" row wrap>
+		<v-layout row wrap>
 			<v-flex xs12>
 				<transition-group name="bounce" tag="div" class="stock__main__wrapper">
-					<stock-item class="item" v-for="stock in filteredStocks" :stock="stock" :key="stock.id"></stock-item>
+					<stock-item v-for="stock in filteredStocks" :stock="stock" :key="stock.id"></stock-item>
 				</transition-group>
 			</v-flex>
 		</v-layout>
 	</v-container>
-
-	<!-- <div class="container">
-		<div class="row">
-			<div class="header">
-				<h2 class="teal-text text-accent-4">Stock market</h2>
-				<p class="teal-text text-lighten-1">
-					<a @click="toggleFilters" class="btn-floating waves-effect waves-light teal">
-						<i class="material-icons">{{ filtersOn ? 'remove' : 'add'}}</i>
-					</a>
-					{{ filtersOn ? ' Remove filters' : ' Add filters'}}
-				</p>
-				<transition name="slide" mode="out-in" class="dropdown">
-					<stock-filter
-						@addedFilterOption="updateFilterOptions($event)"
-						@changedPrice="filterOptions.price = changePrice($event)"
-						v-if="filtersOn"
-						v-model.lowercase="searchValue"></stock-filter>
-				</transition>
-			</div>
-			<div class="col s12">
-				<transition-group name="bounce" tag="div">
-					<stock-item class="item" v-for="stock in filteredStocks" :stock="stock" :key="stock.id"></stock-item>
-				</transition-group>
-			</div>
-		</div>
-	</div> -->
 </template>
 
 <script>
@@ -86,7 +70,6 @@
 					this.$store.state.stocks.forEach(el => {
 						this.filterOptions.sector.push(el.sector)
 						this.filterOptions.country.push(el.country)
-						// ?? CHECK FOR PRICE ??
 					})
 				} else{
 					this.filtersOn = true
@@ -100,6 +83,9 @@
 			}
 		},
 		computed: {
+			showLoader () {
+	      return this.$store.state.loaderActive
+	    },
 			stocks () {
 				return this.$store.state.stocks
 			},
@@ -166,14 +152,10 @@
 </script>
 
 <style scoped lang="scss">
-	.stock__main__wrapper {
-		display: flex;
-		flex-wrap: wrap;
-	}
 	.stocks {
-		flex-direction: column;
-		.item {
-			display: inline-block;
+		.stock__main__wrapper {
+			display: flex;
+			flex-wrap: wrap;
 		}
 		.bounce-enter {
 			opacity: 0;

@@ -1,5 +1,15 @@
 <template>
-	<v-container grid-list-xl class="portfolio mt-4">
+	<v-container d-flex align-center fill-height v-if="showLoader">
+		<div class="text-xs-center">
+			<v-progress-circular
+				:size="70"
+	      :width="7"
+	      color="teal lighten-2"
+	      indeterminate
+	    ></v-progress-circular>
+		</div>
+	</v-container>
+	<v-container v-else grid-list-xl class="portfolio mt-4">
 		<v-layout class="portfolio__main" column wrap>
 			<h1 class="font-weight-light teal--text accent-4" :class="`display-${getDisplay}`">Your portfolio</h1>
 			<v-divider class="my-3"></v-divider>
@@ -20,7 +30,7 @@
 		<v-layout class="portfolio__main" row wrap>
 			<v-flex v-if="stocks.length > 0" xs12>
 				<transition-group name="bounce" tag="div" class="portfolio__main__wrapper">
-					<stock-item class="item" v-for="stock in filteredStocks" :stock="stock" :key="stock.id"></stock-item>
+					<stock-item v-for="stock in filteredStocks" :stock="stock" :key="stock.id"></stock-item>
 				</transition-group>
 			</v-flex>
 			<v-flex v-else xs12>
@@ -40,40 +50,6 @@
 			</v-flex>
 		</v-layout>
 	</v-container>
-
-
-	<!-- <div class="container">
-		<div class="row">
-			<div class="header">
-				<h2 class="teal-text text-accent-4">Your portfolio</h2>
-				<p class="teal-text text-lighten-1">
-					<a @click="toggleFilters" class="btn-floating waves-effect waves-light teal">
-						<i class="material-icons">{{ filtersOn ? 'remove' : 'add'}}</i>
-					</a>
-					{{ filtersOn ? ' Remove filters' : ' Add filters'}}
-				</p>
-				<transition name="slide" mode="out-in" class="dropdown">
-					<stock-filter
-						@addedFilterOption="updateFilterOptions($event)"
-						@changedPrice="filterOptions.price = changePrice($event)"
-						v-if="filtersOn"
-						v-model.lowercase="searchValue"></stock-filter>
-				</transition>
-			</div>
-			<div v-if="stocks.length > 0" class="col s12">
-				<transition-group name="bounce" tag="div">
-					<stock-item class="item" v-for="stock in filteredStocks" :stock="stock" :key="stock.id"></stock-item>
-				</transition-group>
-			</div>
-			<div v-else class="col s12">
-				<p class="blue-grey-text text-darken-2">You currently have no stocks in your portfolio</p>
-				<div class="btn-group">
-					<a @click="loadPortfolio" class="waves-effect waves-light btn-large"><i class="material-icons left">file_download</i>Load portfolio</a>
-					<a @click="navigateToStocks" class="waves-effect waves-light btn-large"><i class="material-icons left">add_shopping_cart</i>Buy stocks</a>
-				</div>
-			</div>
-		</div>
-	</div> -->
 </template>
 
 <script>
@@ -125,7 +101,6 @@
 					this.$store.state.myStocks.forEach(el => {
 						this.filterOptions.sector.push(el.sector);
 						this.filterOptions.country.push(el.country);
-						// ?? CHECK FOR PRICE ??
 					});
 				} else{
 					this.filtersOn = true;
@@ -139,10 +114,12 @@
 			}
 		},
 		computed: {
+			showLoader () {
+	      return this.$store.state.loaderActive
+	    },
 			stocks(){
 				return this.$store.state.myStocks;
 			},
-
 			filteredStocks(){
 				return this.stocks.filter(stock => {
 					return stock.name.toLowerCase().match(this.searchValue);
@@ -172,35 +149,21 @@
 </script>
 
 <style scoped lang="scss">
-	.portfolio__info {
-		display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    max-width: 35rem;
-    height: 15rem;
-    margin: 0 auto;
-	}
-
-	.portfolio__main__wrapper {
-		display: flex;
-		flex-wrap: wrap;
-	}
-
-	.container {
-		// margin-top: 3rem;
-		.item {
-			display: inline-block;
+	.portfolio {
+		.portfolio__info {
+			display: flex;
+	    flex-direction: column;
+	    justify-content: center;
+	    align-items: center;
+	    text-align: center;
+	    max-width: 35rem;
+	    height: 15rem;
+	    margin: 0 auto;
 		}
 
-		.btn-group {
+		.portfolio__main__wrapper {
 			display: flex;
-			justify-content: center;
-			align-items: center;
-			a {
-				margin: 30px;
-			}
+			flex-wrap: wrap;
 		}
 
 		.bounce-enter {
@@ -218,7 +181,7 @@
 		}
 		.bounce-leave-to {
 			opacity: 0;
-	  		transform: scale(0.7);
+  		transform: scale(0.7);
 		}
 		.bounce-leave-active {
 			opacity: 0;
